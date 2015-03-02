@@ -1,6 +1,7 @@
 /*
-* cropper.js -- v0.1
+* cropper.js -- v0.2
 * Copyright 2012 Oscar Key
+* Copyright 2015 Modified by Bruno Cabral
 * A simple image cropping library which uses pure Javascript and the <canvas> tag in order to crop images in the browser.
 */
 
@@ -59,8 +60,8 @@
 			drawOverlay();
 
 			// draw the resizer
-			var x = overlay.x + overlay.width - 5,
-				y = overlay.y + overlay.height - 5,
+			var x = overlay.x + overlay.width - 10,
+				y = overlay.y + overlay.height - 10,
 				w = overlay.resizerSide,
 				h = overlay.resizerSide;
 
@@ -242,11 +243,13 @@
 					overlay.width = canvas.width - overlay.x;
 				}
 
-				overlay.height = overlay.width * overlay.ratioXY;
+				//overlay.height = overlay.width * overlay.ratioXY;
+				
+				overlay.height = drag.originalOverlayHeight + (y - drag.originalY);
 
 				if(overlay.y + overlay.height > canvas.height) {
 					overlay.height = canvas.height - overlay.y;
-					overlay.width = overlay.height / overlay.ratioXY;
+					//overlay.width = overlay.height / overlay.ratioXY;
 				}
 
 				draw();
@@ -325,11 +328,50 @@
 	cropper.showImage = function(src) {
 		cropping = false;
 		image = new Image();
+		
 		image.onload = function() {
+			canvas.width = 800;
+			canvas.height = 600;	
+			
 			currentDimens = getScaledImageDimensions(image.width, image.height) ; // work out the scaling
+			
+			canvas.width = currentDimens.width;
+			canvas.height = currentDimens.height;	
+			
+			overlay.x =  0;
+			overlay.y = 0;
+			overlay.width = currentDimens.width;
+			overlay.height = currentDimens.height;
+	
 			draw();
 		};
 		image.src = src;
+	};
+	
+	
+	cropper.fromDataUrl = function(dataUrl) {
+
+		cropping = false;
+		image = new Image();
+		image.onload = function() {
+			
+			
+			
+			canvas.width = 800;
+			canvas.height = 600;
+			currentDimens = getScaledImageDimensions(image.width, image.height) ; // work out the scaling
+			canvas.width = currentDimens.width;
+			canvas.height = currentDimens.height;
+
+			overlay.x =  0;
+			overlay.y = 0;
+			overlay.width = currentDimens.width;
+			overlay.height = currentDimens.height;
+
+			
+			draw();
+		};
+		image.src = dataUrl;
 	};
 
 	cropper.startCropping = function() {
@@ -400,8 +442,8 @@
 			y: 50,
 			width: 100,
 			height: 100,
-			resizerSide: 10,
-			ratioXY: 1
+			resizerSide: 20,
+			ratioXY: 1.0
 		}
 
 		// set up the overlay ratio
@@ -436,8 +478,8 @@
 		var currentElement = this;
 
 		do {
-			totalOffsetX += currentElement.offsetLeft;
-			totalOffsetY += currentElement.offsetTop;
+			totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+			totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
 		}
 		while(currentElement = currentElement.offsetParent)
 
