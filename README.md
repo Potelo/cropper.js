@@ -1,5 +1,6 @@
 # cropper.js
 Copyright 2012 Oscar Key  
+Copyright 2015 Bruno Cabral
 Licensed under GPL v3. See below and COPYING.  
 A simple image cropping library which uses pure Javascript and the `<canvas>` tag in order to crop images in the browser.
 
@@ -14,6 +15,10 @@ The example probably provides the best documentation, see `example.html`.
 **cropper.showImage(src)**  
 *src*: the url to the image, it is probably best to use a "data uri"  
 Cropper will display the image provided in the canvas, scaled to fit. If the image did not exist, it will crash.
+
+**cropper.fromDataUrl(image)**  
+*image*: The image as base64 to load Gram
+
 
 **cropper.startCropping()**  
 *returns*: true if cropping started, false if no image present  
